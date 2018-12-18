@@ -8,6 +8,7 @@ export declare class DPOSUser {
     private _wallet;
     private _client;
     private _address;
+    private _ethAddress;
     private _ethereumGateway;
     private _ethereumLoom;
     private _dappchainGateway;
@@ -17,13 +18,15 @@ export declare class DPOSUser {
     static createOfflineUserAsync(endpoint: string, privateKey: string, dappchainEndpoint: string, dappchainKey: string, chainId: string, gatewayAddress: string, loomAddress: string): Promise<DPOSUser>;
     static createMetamaskUserAsync(web3: Web3, dappchainEndpoint: string, dappchainKey: string, chainId: string, gatewayAddress: string, loomAddress: string): Promise<DPOSUser>;
     static createUserAsync(wallet: ethers.Signer, dappchainEndpoint: string, dappchainKey: string, chainId: string, gatewayAddress: string, loomAddress: string): Promise<DPOSUser>;
-    constructor(wallet: ethers.Signer, client: Client, address: Address, gatewayAddress: string, loomAddress: string, dappchainGateway: Contracts.LoomCoinTransferGateway, dappchainLoom: Contracts.Coin, dappchainDPOS: Contracts.DPOS2, dappchainMapper: Contracts.AddressMapper);
+    constructor(wallet: ethers.Signer, client: Client, address: Address, ethAddress: string, gatewayAddress: string, loomAddress: string, dappchainGateway: Contracts.LoomCoinTransferGateway, dappchainLoom: Contracts.Coin, dappchainDPOS: Contracts.DPOS2, dappchainMapper: Contracts.AddressMapper);
     readonly ethereumGateway: ethers.Contract;
     readonly ethereumLoom: ethers.Contract;
     readonly dappchainLoom: Contracts.Coin;
     readonly dappchainGateway: Contracts.LoomCoinTransferGateway;
     readonly dappchainDPOS: Contracts.DPOS2;
     readonly addressMapper: Contracts.AddressMapper;
+    readonly ethAddress: string;
+    readonly loomAddress: Address;
     /**
      * Maps the user's ETH address to their DAppChain address. This MUST be called before any interaction with the gateways.
      *

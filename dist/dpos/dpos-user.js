@@ -14,9 +14,10 @@ var coinMultiplier = new bn_js_1.default(10).pow(new bn_js_1.default(18));
 var ERC20Gateway = require('./contracts/ERC20Gateway.json');
 var ERC20 = require('./contracts/ERC20.json');
 var DPOSUser = /** @class */ (function () {
-    function DPOSUser(wallet, client, address, gatewayAddress, loomAddress, dappchainGateway, dappchainLoom, dappchainDPOS, dappchainMapper) {
+    function DPOSUser(wallet, client, address, ethAddress, gatewayAddress, loomAddress, dappchainGateway, dappchainLoom, dappchainDPOS, dappchainMapper) {
         this._wallet = wallet;
         this._address = address;
+        this._ethAddress = ethAddress;
         this._client = client;
         this._ethereumGateway = new ethers_1.ethers.Contract(gatewayAddress, ERC20Gateway, wallet);
         this._ethereumLoom = new ethers_1.ethers.Contract(loomAddress, ERC20, wallet);
@@ -47,7 +48,7 @@ var DPOSUser = /** @class */ (function () {
     };
     DPOSUser.createUserAsync = function (wallet, dappchainEndpoint, dappchainKey, chainId, gatewayAddress, loomAddress) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
-            var privateKey, publicKey, protocol, writerSuffix, readerSuffix, writer, reader, client, address, dappchainLoom, dappchainDPOS, dappchainGateway, dappchainMapper;
+            var privateKey, publicKey, protocol, writerSuffix, readerSuffix, writer, reader, client, address, ethAddress, dappchainLoom, dappchainDPOS, dappchainGateway, dappchainMapper;
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -72,19 +73,22 @@ var DPOSUser = /** @class */ (function () {
                             log('PlasmaChain connection error', msg);
                         });
                         address = new __1.Address(chainId, __1.LocalAddress.fromPublicKey(publicKey));
-                        return [4 /*yield*/, contracts_1.Coin.createAsync(client, address)];
+                        return [4 /*yield*/, wallet.getAddress()];
                     case 1:
+                        ethAddress = _a.sent();
+                        return [4 /*yield*/, contracts_1.Coin.createAsync(client, address)];
+                    case 2:
                         dappchainLoom = _a.sent();
                         return [4 /*yield*/, contracts_1.DPOS2.createAsync(client, address)];
-                    case 2:
+                    case 3:
                         dappchainDPOS = _a.sent();
                         return [4 /*yield*/, contracts_1.LoomCoinTransferGateway.createAsync(client, address)];
-                    case 3:
+                    case 4:
                         dappchainGateway = _a.sent();
                         return [4 /*yield*/, contracts_1.AddressMapper.createAsync(client, address)];
-                    case 4:
+                    case 5:
                         dappchainMapper = _a.sent();
-                        return [2 /*return*/, new DPOSUser(wallet, client, address, gatewayAddress, loomAddress, dappchainGateway, dappchainLoom, dappchainDPOS, dappchainMapper)];
+                        return [2 /*return*/, new DPOSUser(wallet, client, address, ethAddress, gatewayAddress, loomAddress, dappchainGateway, dappchainLoom, dappchainDPOS, dappchainMapper)];
                 }
             });
         });
@@ -127,6 +131,20 @@ var DPOSUser = /** @class */ (function () {
     Object.defineProperty(DPOSUser.prototype, "addressMapper", {
         get: function () {
             return this._dappchainMapper;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(DPOSUser.prototype, "ethAddress", {
+        get: function () {
+            return this._ethAddress;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(DPOSUser.prototype, "loomAddress", {
+        get: function () {
+            return this._address;
         },
         enumerable: true,
         configurable: true
